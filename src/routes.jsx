@@ -1,14 +1,14 @@
 // Import necessary components and functions from react-router-dom.
-
+import React from 'react';
 import {
     createBrowserRouter,
     createRoutesFromElements,
-    Route,
+    Route
 } from "react-router-dom";
-import { Layout } from "./pages/Layout";
-import { Home } from "./pages/Home";
-import { Single } from "./pages/Single";
-import { Demo } from "./pages/Demo";
+import Layout from './Layout';
+import Contact from '../components/Contact';
+import AddContact from '../components/AddContact';
+import EditContact from '../components/EditContact';
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
