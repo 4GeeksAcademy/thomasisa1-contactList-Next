@@ -13,7 +13,9 @@ const getContacts = async () => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return await response.json();
+        const data = await response.json();
+        console.log("Fetched contacts:", data); // Log fetched data
+        return data.contacts; // Return the contacts array
     } catch (error) {
         console.error("Error fetching contacts:", error);
         throw error;
@@ -71,14 +73,18 @@ const Contact = () => {
             <h1>Contact List</h1>
             <Link to='/add'><button>Add Contact</button></Link>
             <div>
-                {Array.isArray(contacts) ? contacts.map(contact => (
-                    <ContactCard
-                        key={contact.id}
-                        contact={contact}
-                        onDelete={handleDelete}
-                        onEdit={handleEdit}
-                    />
-                )) : <p>No contacts available.</p>}
+                {contacts.length === 0 ? (
+                    <p>No contacts available.</p>
+                ) : (
+                    contacts.map(contact => (
+                        <ContactCard
+                            key={contact.id}
+                            contact={contact}
+                            onDelete={handleDelete}
+                            onEdit={handleEdit}
+                        />
+                    ))
+                )}
             </div>
         </div>
     );
