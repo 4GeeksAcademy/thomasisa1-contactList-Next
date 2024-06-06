@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ContactCard from './ContactCard';
 
 // Configuration
@@ -16,44 +16,6 @@ const getContacts = async () => {
         return await response.json();
     } catch (error) {
         console.error("Error fetching contacts:", error);
-        throw error;
-    }
-};
-
-const addContact = async (contact) => {
-    try {
-        const response = await fetch(APIURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(contact)
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Error adding contact:", error);
-        throw error;
-    }
-};
-
-const updateContact = async (id, contact) => {
-    try {
-        const response = await fetch(`${APIURL}/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(contact)
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Error updating contact:", error);
         throw error;
     }
 };
@@ -76,7 +38,7 @@ const deleteContact = async (id) => {
 // Contact component
 const Contact = () => {
     const [contacts, setContacts] = useState([]);
-    const history = useHistory();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchContacts();
@@ -101,22 +63,22 @@ const Contact = () => {
     };
 
     const handleEdit = (contact) => {
-        history.push(`/edit/${contact.id}`, { contact });
+        navigate(`/edit/${contact.id}`, { state: { contact } });
     };
 
     return (
         <div>
             <h1>Contact List</h1>
-            <button onClick={() => history.push('/add')}>Add Contact</button>
+            <Link to='/add'><button>Add Contact</button></Link>
             <div>
-                {contacts.map(contact => (
+                {Array.isArray(contacts) ? contacts.map(contact => (
                     <ContactCard
                         key={contact.id}
                         contact={contact}
                         onDelete={handleDelete}
                         onEdit={handleEdit}
                     />
-                ))}
+                )) : <p>No contacts available.</p>}
             </div>
         </div>
     );

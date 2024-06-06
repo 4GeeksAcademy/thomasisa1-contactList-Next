@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Configuration
 const API_BASE_URL = 'https://playground.4geeks.com/contact/agendas/thomasisa1';
 const APIURL = `${API_BASE_URL}/contacts`;
 
-// API function using fetch
+// API functions using fetch
+const getContact = async (id) => {
+    try {
+        const response = await fetch(`${APIURL}/${id}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching contact:", error);
+        throw error;
+    }
+};
+
 const updateContact = async (id, contact) => {
     try {
         const response = await fetch(`${APIURL}/${id}`, {
@@ -26,32 +39,37 @@ const updateContact = async (id, contact) => {
 };
 
 const EditContact = () => {
-    const history = useHistory();
-    const location = useLocation();
-    const { contact } = location.state || {};
-
-    const [updatedContact, setUpdatedContact] = useState(contact || {
+    const [contact, setContact] = useState({
         name: '',
         email: '',
         phone: '',
         address: ''
     });
+    const navigate = useNavigate();
+    const { id } = useParams();
 
     useEffect(() => {
-        if (!contact) {
-            history.push('/');
+        fetchContact();
+    }, []);
+
+    const fetchContact = async () => {
+        try {
+            const data = await getContact(id);
+            setContact(data);
+        } catch (error) {
+            console.error("Error fetching contact:", error);
         }
-    }, [contact, history]);
+    };
 
     const handleChange = (e) => {
-        setUpdatedContact({ ...updatedContact, [e.target.name]: e.target.value });
+        setContact({ ...contact, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updateContact(contact.id, updatedContact);
-            history.push('/');
+            await updateContact(id, contact);
+            navigate('/');
         } catch (error) {
             console.error("Error updating contact:", error);
         }
@@ -61,10 +79,10 @@ const EditContact = () => {
         <div>
             <h1>Edit Contact</h1>
             <form onSubmit={handleSubmit}>
-                <input name="name" value={updatedContact.name} placeholder="Name" onChange={handleChange} />
-                <input name="email" value={updatedContact.email} placeholder="Email" onChange={handleChange} />
-                <input name="phone" value={updatedContact.phone} placeholder="Phone" onChange={handleChange} />
-                <input name="address" value={updatedContact.address} placeholder="Address" onChange={handleChange} />
+                <input name="name" placeholder="Name" value={contact.name} onChange={handleChange} />
+                <input name="email" placeholder="Email" value={contact.email} onChange={handleChange} />
+                <input name="phone" placeholder="Phone" value={contact.phone} onChange={handleChange} />
+                <input name="address" placeholder="Address" value={contact.address} onChange={handleChange} />
                 <button type="submit">Update Contact</button>
             </form>
         </div>

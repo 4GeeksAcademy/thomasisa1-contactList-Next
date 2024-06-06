@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // Configuration
 const API_BASE_URL = 'https://playground.4geeks.com/contact/agendas/thomasisa1';
@@ -32,7 +32,7 @@ const AddContact = () => {
         phone: '',
         address: ''
     });
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setContact({ ...contact, [e.target.name]: e.target.value });
@@ -42,7 +42,7 @@ const AddContact = () => {
         e.preventDefault();
         try {
             await addContact(contact);
-            history.push('/');
+            navigate('/');
         } catch (error) {
             console.error("Error adding contact:", error);
         }
