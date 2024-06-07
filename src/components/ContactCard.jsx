@@ -1,9 +1,10 @@
 import React from 'react';
 
 const ContactCard = ({ contact, onDelete, onEdit }) => {
+    console.log("ContactCard props:", contact); // Debug log
     return (
         <tr>
-            <td>{contact.full_name}</td>
+            <td>{contact.name}</td>
             <td>{contact.phone}</td>
             <td>{contact.email}</td>
             <td>

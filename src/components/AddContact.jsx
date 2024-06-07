@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-// Configuration
 const API_BASE_URL = 'https://playground.4geeks.com/contact/agendas/thomasisa1';
 const APIURL = `${API_BASE_URL}/contacts`;
 
-// API function to add a new contact
 const addContact = async (contact) => {
     try {
         const response = await fetch(APIURL, {
@@ -16,9 +13,7 @@ const addContact = async (contact) => {
             body: JSON.stringify(contact)
         });
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Server validation error:", errorData);
-            throw new Error(`Network response was not ok: ${JSON.stringify(errorData)}`);
+            throw new Error('Network response was not ok');
         }
         return await response.json();
     } catch (error) {
@@ -27,57 +22,76 @@ const addContact = async (contact) => {
     }
 };
 
-const AddContact = () => {
-    const [contact, setContact] = useState({ name: '', email: '', phone: '', address: '' });
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+const AddContact = ({ onClose, contacts, fetchContacts }) => {
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [address, setAddress] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setContact({ ...contact, [name]: value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!contact.name || !contact.email || !contact.phone || !contact.address) {
-            setError('All fields are required.');
-            return;
-        }
+    const handleAddContact = async (event) => {
+        event.preventDefault();
         try {
-            await addContact(contact);
-            navigate('/');
-        } catch (error) {
-            setError(`Failed to add contact. ${error.message}`);
-        }
-    };
+            const existingContact = contacts.find(contact => contact.email === email);
+            if (existingContact) {
+                alert("User with this email already exists");
+                return;
+            }
 
-    const handleCancel = () => {
-        navigate('/');
+            await addContact({ name, phone, email, address });
+            fetchContacts();
+            onClose();
+        } catch (error) {
+            console.error("Error adding contact:", error);
+        }
     };
 
     return (
-        <div>
+        <div className="side-form">
             <h1>Add Contact</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
+            <form onSubmit={handleAddContact}>
+                <div className="form-group">
                     <label>Name</label>
-                    <input type="text" name="name" value={contact.name} onChange={handleChange} required />
+                    <input 
+                        type="text" 
+                        value={name} 
+                        onChange={(e) => setName(e.target.value)} 
+                        required 
+                        className="form-control"
+                    />
                 </div>
-                <div>
-                    <label>Email</label>
-                    <input type="email" name="email" value={contact.email} onChange={handleChange} required />
-                </div>
-                <div>
+                <div className="form-group">
                     <label>Phone</label>
-                    <input type="tel" name="phone" value={contact.phone} onChange={handleChange} required />
+                    <input 
+                        type="tel" 
+                        value={phone} 
+                        onChange={(e) => setPhone(e.target.value)} 
+                        required 
+                        className="form-control"
+                    />
                 </div>
-                <div>
+                <div className="form-group">
+                    <label>Email</label>
+                    <input 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group">
                     <label>Address</label>
-                    <input type="text" name="address" value={contact.address} onChange={handleChange} required />
+                    <input 
+                        type="text" 
+                        value={address} 
+                        onChange={(e) => setAddress(e.target.value)} 
+                        className="form-control"
+                    />
                 </div>
-                <button type="submit">Add Contact</button>
-                <button type="button" onClick={handleCancel}>Cancel</button>
+                <div className="form-group">
+                    <button type="submit" className="btn btn-primary">Add Contact</button>
+                    <button type="button" onClick={onClose} className="btn btn-secondary">Cancel</button>
+                </div>
             </form>
         </div>
     );

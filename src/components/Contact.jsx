@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import ContactCard from './ContactCard';
+import AddContact from './AddContact';
+import EditContact from './EditContact';
 import Footer from './Footer';
 
 // Configuration
@@ -44,7 +45,9 @@ const Contact = () => {
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [contactsPerPage] = useState(10);
-    const navigate = useNavigate();
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [selectedContact, setSelectedContact] = useState(null);
 
     useEffect(() => {
         fetchContacts();
@@ -70,7 +73,8 @@ const Contact = () => {
     };
 
     const handleEdit = (contact) => {
-        navigate(`/edit/${contact.id}`, { state: { contact } });
+        setSelectedContact(contact);
+        setShowEditForm(true);
     };
 
     // Pagination
@@ -83,8 +87,8 @@ const Contact = () => {
     return (
         <div className="app-container">
             <h1>Contact List</h1>
-            <Link to='/add'><button>Add Contact</button></Link>
-            <table className="contact-table">
+            <button className="btn btn-primary" onClick={() => setShowAddForm(true)}>Add Contact</button>
+            <table className="table table-striped contact-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -113,11 +117,19 @@ const Contact = () => {
             <Footer isContactListEmpty={contacts.length === 0} />
             <div className="pagination">
                 {Array.from({ length: Math.ceil(contacts.length / contactsPerPage) }, (_, index) => (
-                    <button key={index + 1} onClick={() => paginate(index + 1)}>
+                    <button key={index + 1} onClick={() => paginate(index + 1)} className="btn btn-primary">
                         {index + 1}
                     </button>
                 ))}
             </div>
+            {showAddForm && <AddContact onClose={() => setShowAddForm(false)} contacts={contacts} fetchContacts={fetchContacts} />}
+            {showEditForm && selectedContact && (
+                <EditContact
+                    contact={selectedContact}
+                    onClose={() => setShowEditForm(false)}
+                    fetchContacts={fetchContacts}
+                />
+            )}
         </div>
     );
 };
