@@ -30,7 +30,10 @@ const deleteContact = async (id) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return await response.json();
+        // Assuming the server returns an empty response on successful delete
+        const result = response.headers.get('Content-Length') !== '0' ? await response.json() : {};
+        console.log(`Deleted contact with id: ${id}`, result); // Debug log
+        return result;
     } catch (error) {
         console.error("Error deleting contact:", error);
         throw error;
@@ -56,6 +59,7 @@ const Contact = () => {
     };
 
     const handleDelete = async (id) => {
+        console.log(`handleDelete called with id: ${id}`); // Debug log
         try {
             await deleteContact(id);
             fetchContacts(); // Refresh the contact list after deletion
