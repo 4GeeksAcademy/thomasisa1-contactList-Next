@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ContactCard from './ContactCard';
+import Footer from './Footer';
 
 // Configuration
 const API_BASE_URL = 'https://playground.4geeks.com/contact/agendas/thomasisa1';
@@ -30,10 +31,7 @@ const deleteContact = async (id) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        // Assuming the server returns an empty response on successful delete
-        const result = response.headers.get('Content-Length') !== '0' ? await response.json() : {};
-        console.log(`Deleted contact with id: ${id}`, result); // Debug log
-        return result;
+        return {};
     } catch (error) {
         console.error("Error deleting contact:", error);
         throw error;
@@ -90,6 +88,7 @@ const Contact = () => {
                     ))
                 )}
             </div>
+            <Footer isContactListEmpty={contacts.length === 0} />
         </div>
     );
 };
