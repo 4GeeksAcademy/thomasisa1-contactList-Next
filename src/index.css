@@ -10,92 +10,117 @@ body {
 }
 
 .app-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
+    text-align: center;
 }
 
 h1 {
     color: #333;
 }
 
-.contact-card {
-    background-color: #fff;
+.contact-form {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.contact-form input {
+    padding: 10px;
+    margin-right: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 10px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex: 1;
 }
 
-.contact-card h3 {
-    margin: 0;
-    color: #007BFF;
-}
-
-.contact-card p {
-    margin: 5px 0;
-}
-
-button {
-    padding: 10px;
-    margin: 5px;
+.contact-form .add-button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-button:hover {
+.contact-form .add-button:hover {
     opacity: 0.8;
 }
 
-button:active {
+.contact-form .add-button:active {
     opacity: 0.6;
 }
 
-button:focus {
+.contact-form .add-button:focus {
     outline: none;
 }
 
-button.edit {
+.contact-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.contact-table th, .contact-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.contact-table th {
+    background-color: #f1f1f1;
+}
+
+.edit-button {
     background-color: #28a745;
     color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-button.delete {
+.edit-button:hover {
+    opacity: 0.8;
+}
+
+.edit-button:active {
+    opacity: 0.6;
+}
+
+.delete-button {
     background-color: #dc3545;
     color: white;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-input {
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
+    border: none;
+    padding: 5px 10px;
     border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
 }
 
-input:focus {
-    outline: none;
-    border-color: #007BFF;
+.delete-button:hover {
+    opacity: 0.8;
 }
 
-button.submit {
+.delete-button:active {
+    opacity: 0.6;
+}
+
+.pagination button {
     background-color: #007BFF;
     color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    opacity: 0.8;
+}
+
+.pagination button:active {
+    opacity: 0.6;
 }

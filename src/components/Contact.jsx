@@ -41,6 +41,9 @@ const deleteContact = async (id) => {
 // Contact component
 const Contact = () => {
     const [contacts, setContacts] = useState([]);
+    const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [contactsPerPage] = useState(10);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -70,25 +73,51 @@ const Contact = () => {
         navigate(`/edit/${contact.id}`, { state: { contact } });
     };
 
+    // Pagination
+    const indexOfLastContact = currentPage * contactsPerPage;
+    const indexOfFirstContact = indexOfLastContact - contactsPerPage;
+    const currentContacts = contacts.slice(indexOfFirstContact, indexOfLastContact);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
-        <div>
+        <div className="app-container">
             <h1>Contact List</h1>
             <Link to='/add'><button>Add Contact</button></Link>
-            <div>
-                {contacts.length === 0 ? (
-                    <p>No contacts available.</p>
-                ) : (
-                    contacts.map(contact => (
-                        <ContactCard
-                            key={contact.id}
-                            contact={contact}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
-                        />
-                    ))
-                )}
-            </div>
+            <table className="contact-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {currentContacts.length === 0 ? (
+                        <tr>
+                            <td colSpan="4">No contacts available.</td>
+                        </tr>
+                    ) : (
+                        currentContacts.map(contact => (
+                            <ContactCard
+                                key={contact.id}
+                                contact={contact}
+                                onDelete={handleDelete}
+                                onEdit={handleEdit}
+                            />
+                        ))
+                    )}
+                </tbody>
+            </table>
             <Footer isContactListEmpty={contacts.length === 0} />
+            <div className="pagination">
+                {Array.from({ length: Math.ceil(contacts.length / contactsPerPage) }, (_, index) => (
+                    <button key={index + 1} onClick={() => paginate(index + 1)}>
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };

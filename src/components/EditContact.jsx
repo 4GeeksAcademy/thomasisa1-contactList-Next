@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // Configuration
 const API_BASE_URL = 'https://playground.4geeks.com/contact/agendas/thomasisa1';
 const APIURL = `${API_BASE_URL}/contacts`;
 
-// API function to update a contact
 const updateContact = async (id, contact) => {
     try {
         const response = await fetch(`${APIURL}/${id}`, {
@@ -27,24 +26,17 @@ const updateContact = async (id, contact) => {
 
 const EditContact = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
-    const location = useLocation();
-    const [contact, setContact] = useState(location.state.contact || { full_name: '', email: '', phone: '', address: '' });
-    const [error, setError] = useState('');
+    const { state } = useLocation();
+    const { contact } = state || { contact: { id: null, full_name: '', phone: '', email: '' } };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setContact({ ...contact, [name]: value });
-    };
+    const [fullName, setFullName] = useState(contact.full_name || '');
+    const [phone, setPhone] = useState(contact.phone || '');
+    const [email, setEmail] = useState(contact.email || '');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!contact.full_name || !contact.email || !contact.phone || !contact.address) {
-            setError('All fields are required.');
-            return;
-        }
+    const handleUpdateContact = async (event) => {
+        event.preventDefault();
         try {
-            await updateContact(id, contact);
+            await updateContact(contact.id, { full_name: fullName, phone, email });
             navigate('/');
         } catch (error) {
             console.error("Error updating contact:", error);
@@ -56,28 +48,40 @@ const EditContact = () => {
     };
 
     return (
-        <div>
+        <div className="app-container">
             <h1>Edit Contact</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleUpdateContact}>
                 <div>
                     <label>Name</label>
-                    <input type="text" name="full_name" value={contact.full_name} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Email</label>
-                    <input type="email" name="email" value={contact.email} onChange={handleChange} required />
+                    <input 
+                        type="text" 
+                        value={fullName} 
+                        onChange={(e) => setFullName(e.target.value)} 
+                        required 
+                    />
                 </div>
                 <div>
                     <label>Phone</label>
-                    <input type="tel" name="phone" value={contact.phone} onChange={handleChange} required />
+                    <input 
+                        type="tel" 
+                        value={phone} 
+                        onChange={(e) => setPhone(e.target.value)} 
+                        required 
+                    />
                 </div>
                 <div>
-                    <label>Address</label>
-                    <input type="text" name="address" value={contact.address} onChange={handleChange} required />
+                    <label>Email</label>
+                    <input 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                    />
                 </div>
-                <button type="submit">Update Contact</button>
-                <button type="button" onClick={handleCancel}>Cancel</button>
+                <div>
+                    <button type="submit" className="submit-button">Save</button>
+                    <button type="button" onClick={handleCancel} className="cancel-button">Cancel</button>
+                </div>
             </form>
         </div>
     );
